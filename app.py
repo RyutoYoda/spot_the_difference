@@ -59,20 +59,22 @@ if uploaded_file1 and uploaded_file2:
     kernel = np.ones((2, 2), np.uint8)
     result_bin = cv2.morphologyEx(result_bin, cv2.MORPH_OPEN, kernel)
 
-    # 差分部分を赤色でハイライト表示
+    # 差分部分を濃い赤色でハイライト表示
     result_highlight = np.zeros_like(imgA)
-    result_highlight[result_bin > 0] = [0, 0, 255]  # 赤色のハイライト
+    result_highlight[result_bin > 0] = [0, 0, 255]  # 濃い赤色のハイライト
 
-    # オーバーレイ画像の生成
-    result_overlay = cv2.addWeighted(imgA, 0.7, result_highlight, 0.3, 0)
+    # オーバーレイ画像の生成（赤色を強調）
+    result_overlay = cv2.addWeighted(imgA, 0.6, result_highlight, 0.8, 0)
 
-    # Streamlitで画像を表示
+    # Streamlitで画像を横並びに表示
     st.write("### 📸 結果の表示")
-    st.image([Image.fromarray(cv2.cvtColor(imgA, cv2.COLOR_BGR2RGB)), 
-              Image.fromarray(cv2.cvtColor(imgB_transform, cv2.COLOR_BGR2RGB)), 
-              Image.fromarray(cv2.cvtColor(result_overlay, cv2.COLOR_BGR2RGB))], 
-             caption=["元の画像", "変換後の画像", "差分が赤色でハイライトされた画像"], 
-             use_column_width=True)
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.image(Image.fromarray(cv2.cvtColor(imgA, cv2.COLOR_BGR2RGB)), caption="元の画像", use_column_width=True)
+    with col2:
+        st.image(Image.fromarray(cv2.cvtColor(imgB_transform, cv2.COLOR_BGR2RGB)), caption="変換後の画像", use_column_width=True)
+    with col3:
+        st.image(Image.fromarray(cv2.cvtColor(result_overlay, cv2.COLOR_BGR2RGB)), caption="差分が赤色でハイライトされた画像", use_column_width=True)
 
 else:
     st.write("**サイドバーから両方の画像をアップロードしてください。**")
