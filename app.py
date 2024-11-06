@@ -4,12 +4,16 @@ import streamlit as st
 from PIL import Image
 
 # タイトルと説明
-st.title("間違い探しアプリ")
-st.write("2枚の画像をアップロードすると、間違い（差分）部分がハイライトされます。")
+st.title("🔍 間違い探しアプリ")
+st.write("アップロードした画像から間違い（差分）を探し出してハイライトします。")
+
+# サイドバーにインフォメーション追加
+st.sidebar.header("📷 画像をアップロード")
+st.sidebar.write("1枚目と2枚目の画像を選択してください。")
 
 # ユーザーがアップロードする画像ファイル
-uploaded_file1 = st.file_uploader("1枚目の画像をアップロード", type=["png", "jpg", "jpeg"])
-uploaded_file2 = st.file_uploader("2枚目の画像をアップロード", type=["png", "jpg", "jpeg"])
+uploaded_file1 = st.sidebar.file_uploader("1枚目の画像", type=["png", "jpg", "jpeg"])
+uploaded_file2 = st.sidebar.file_uploader("2枚目の画像", type=["png", "jpg", "jpeg"])
 
 # 両方の画像がアップロードされた場合に処理を開始
 if uploaded_file1 and uploaded_file2:
@@ -55,16 +59,20 @@ if uploaded_file1 and uploaded_file2:
     kernel = np.ones((2, 2), np.uint8)
     result_bin = cv2.morphologyEx(result_bin, cv2.MORPH_OPEN, kernel)
 
-    # 差分部分をオーバーレイ表示
-    result_bin_rgb = cv2.cvtColor(result_bin, cv2.COLOR_GRAY2RGB)
-    result_overlay = cv2.addWeighted(imgA, 0.7, result_bin_rgb, 0.3, 0)
+    # 差分部分を赤色でハイライト表示
+    result_highlight = np.zeros_like(imgA)
+    result_highlight[result_bin > 0] = [0, 0, 255]  # 赤色のハイライト
+
+    # オーバーレイ画像の生成
+    result_overlay = cv2.addWeighted(imgA, 0.7, result_highlight, 0.3, 0)
 
     # Streamlitで画像を表示
+    st.write("### 📸 結果の表示")
     st.image([Image.fromarray(cv2.cvtColor(imgA, cv2.COLOR_BGR2RGB)), 
               Image.fromarray(cv2.cvtColor(imgB_transform, cv2.COLOR_BGR2RGB)), 
               Image.fromarray(cv2.cvtColor(result_overlay, cv2.COLOR_BGR2RGB))], 
-             caption=["元の画像", "変換後の画像", "差分がハイライトされた画像"], 
+             caption=["元の画像", "変換後の画像", "差分が赤色でハイライトされた画像"], 
              use_column_width=True)
 
 else:
-    st.write("両方の画像をアップロードしてください。")
+    st.write("**サイドバーから両方の画像をアップロードしてください。**")
