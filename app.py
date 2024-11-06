@@ -67,14 +67,16 @@ if uploaded_file1 and uploaded_file2:
     result_overlay = cv2.addWeighted(imgA, 0.6, result_highlight, 0.8, 0)
 
     # Streamlitで画像を横並びに表示
-    st.write("### 📸 結果の表示")
-    col1, col2, col3 = st.columns(3)
+    st.write("### 📸 元画像と変換後の画像")
+    col1, col2 = st.columns(2)
     with col1:
         st.image(Image.fromarray(cv2.cvtColor(imgA, cv2.COLOR_BGR2RGB)), caption="元の画像", use_column_width=True)
     with col2:
         st.image(Image.fromarray(cv2.cvtColor(imgB_transform, cv2.COLOR_BGR2RGB)), caption="変換後の画像", use_column_width=True)
-    with col3:
-        st.image(Image.fromarray(cv2.cvtColor(result_overlay, cv2.COLOR_BGR2RGB)), caption="差分が赤色でハイライトされた画像", use_column_width=True)
+
+    # ハイライトされた差分画像を大きく表示
+    st.write("### 🔴 差分が赤色でハイライトされた画像")
+    st.image(Image.fromarray(cv2.cvtColor(result_overlay, cv2.COLOR_BGR2RGB)), caption="差分が赤色でハイライトされた画像", use_column_width=True)
 
 else:
     st.write("**サイドバーから両方の画像をアップロードしてください。**")
