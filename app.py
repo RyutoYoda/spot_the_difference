@@ -43,7 +43,7 @@ if uploaded_file1 and uploaded_file2:
     good_matches = sorted(matches, key=lambda x: x.distance)[:int(len(matches) * 0.15)]
 
     # マッチング数が十分かチェック
-    if len(good_matches) > 10:  # 十分なマッチ数があるか確認
+    if len(good_matches) > 1:  # 十分なマッチ数があるか確認
         src_pts = np.float32([kpA[m.queryIdx].pt for m in good_matches]).reshape(-1, 1, 2)
         dst_pts = np.float32([kpB[m.trainIdx].pt for m in good_matches]).reshape(-1, 1, 2)
 
