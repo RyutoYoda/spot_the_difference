@@ -23,8 +23,9 @@ if uploaded_file1 and uploaded_file2:
     
     # サイズ統一: 最大1000ピクセルまで縮小
     base_size = (1000, 1000)
-    imgA.thumbnail(base_size, Image.ANTIALIAS)
-    imgB.thumbnail(base_size, Image.ANTIALIAS)
+    imgA.thumbnail(base_size, Image.LANCZOS)
+    imgB.thumbnail(base_size, Image.LANCZOS)
+
 
     # OpenCV用に画像を変換
     imgA = cv2.cvtColor(np.array(imgA), cv2.COLOR_RGB2BGR)
